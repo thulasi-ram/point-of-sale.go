@@ -1,0 +1,12 @@
+version: 1
+packages:
+  - path: "products/repository"
+    queries: "products/repository/queries.sql"
+    <<: &default
+      engine: "postgresql"
+      schema: "internal/db/migrations"
+      sql_package: "pgx/v4"
+
+#  - path: "purchases"
+#    queries: "purchases/queries.sql"
+#    <<: *default
