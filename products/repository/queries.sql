@@ -8,9 +8,10 @@ SELECT *
 FROM products
 ORDER BY name;
 
--- name: CreateProduct :execresult
-INSERT INTO products (name, category)
-VALUES ($1, $2);
+-- name: CreateProduct :one
+INSERT INTO products (name, description, category_id)
+VALUES ($1, $2, $3)
+RETURNING *;
 
 -- name: DeleteProduct :exec
 DELETE

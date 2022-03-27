@@ -8,7 +8,7 @@ import (
 type APIResponse struct {
 	Data   interface{}   `json:"data,omitempty"`
 	Errors []interface{} `json:"errors,omitempty"`
-	Status int
+	Status int           `json:"-"`
 }
 
 type Endpoint func(app *App, req *http.Request) *APIResponse

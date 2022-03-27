@@ -39,7 +39,7 @@ func main() {
 		}
 	})
 
-	products.RoutesInit(app)
+	products.InitRoutes(app)
 
 	s := &http.Server{
 		Addr: "0.0.0.0:8080",

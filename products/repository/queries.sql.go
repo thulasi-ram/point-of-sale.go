@@ -5,23 +5,30 @@ package repository
 
 import (
 	"context"
-	"database/sql"
-
-	"github.com/jackc/pgconn"
 )
 
-const createProduct = `-- name: CreateProduct :execresult
-INSERT INTO products (name, category)
-VALUES ($1, $2)
+const createProduct = `-- name: CreateProduct :one
+INSERT INTO products (name, description, category_id)
+VALUES ($1, $2, $3)
+RETURNING id, name, description, category_id
 `
 
 type CreateProductParams struct {
-	Name     string
-	Category sql.NullString
+	Name        string
+	Description string
+	CategoryID  int64
 }
 
-func (q *Queries) CreateProduct(ctx context.Context, arg CreateProductParams) (pgconn.CommandTag, error) {
-	return q.db.Exec(ctx, createProduct, arg.Name, arg.Category)
+func (q *Queries) CreateProduct(ctx context.Context, arg CreateProductParams) (Product, error) {
+	row := q.db.QueryRow(ctx, createProduct, arg.Name, arg.Description, arg.CategoryID)
+	var i Product
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Description,
+		&i.CategoryID,
+	)
+	return i, err
 }
 
 const deleteProduct = `-- name: DeleteProduct :exec
@@ -36,7 +43,7 @@ func (q *Queries) DeleteProduct(ctx context.Context, id int64) error {
 }
 
 const getProduct = `-- name: GetProduct :one
-SELECT id, name, category
+SELECT id, name, description, category_id
 FROM products
 WHERE id = $1
 `
@@ -44,12 +51,17 @@ WHERE id = $1
 func (q *Queries) GetProduct(ctx context.Context, id int64) (Product, error) {
 	row := q.db.QueryRow(ctx, getProduct, id)
 	var i Product
-	err := row.Scan(&i.ID, &i.Name, &i.Category)
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Description,
+		&i.CategoryID,
+	)
 	return i, err
 }
 
 const listProducts = `-- name: ListProducts :many
-SELECT id, name, category
+SELECT id, name, description, category_id
 FROM products
 ORDER BY name
 `
@@ -63,7 +75,12 @@ func (q *Queries) ListProducts(ctx context.Context) ([]Product, error) {
 	var items []Product
 	for rows.Next() {
 		var i Product
-		if err := rows.Scan(&i.ID, &i.Name, &i.Category); err != nil {
+		if err := rows.Scan(
+			&i.ID,
+			&i.Name,
+			&i.Description,
+			&i.CategoryID,
+		); err != nil {
 			return nil, err
 		}
 		items = append(items, i)
