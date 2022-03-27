@@ -16,4 +16,11 @@ func InitRoutes(app *web.App) {
 		r.Get("/{id}", handler(controllers.GetProductEndpoint))
 		r.Delete("/{id}", handler(controllers.DeleteProductEndpoint))
 	})
+
+	r.Route("/api/categories", func(r chi.Router) {
+		r.Get("/", handler(controllers.ListCategoriesEndpoint))
+		r.Post("/", handler(controllers.CreateCategoryEndpoint))
+		r.Get("/{id}", handler(controllers.GetCategoryEndpoint))
+		r.Delete("/{id}", handler(controllers.DeleteCategoryEndpoint))
+	})
 }

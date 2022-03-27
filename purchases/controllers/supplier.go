@@ -9,12 +9,12 @@ import (
 	"point-of-sale.go/v1/internal/web"
 )
 
-type getProductRequest struct {
+type getSupplierRequest struct {
 	Id int64 `json:"id,string" validate:"required"`
 }
 
-func GetProductEndpoint(app *web.App, r *http.Request) *web.APIResponse {
-	data := &getProductRequest{}
+func GetSupplierEndpoint(app *web.App, r *http.Request) *web.APIResponse {
+	data := &getSupplierRequest{}
 	err := app.Validate(data, r, false, false, true, false)
 	if err != nil {
 		return web.NewErrorAPIResponse(fmt.Errorf("invalid payload %w", err), 400)
@@ -26,7 +26,7 @@ func GetProductEndpoint(app *web.App, r *http.Request) *web.APIResponse {
 		return web.NewErrorAPIResponse(err, 500)
 	}
 
-	product, err := repo.GetProduct(r.Context(), data.Id)
+	supplier, err := repo.GetSupplier(r.Context(), data.Id)
 
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
@@ -35,53 +35,53 @@ func GetProductEndpoint(app *web.App, r *http.Request) *web.APIResponse {
 		return web.NewErrorAPIResponse(err, 500)
 	}
 
-	return web.NewAPIResponse(product, 200)
+	return web.NewAPIResponse(supplier, 200)
 }
 
-type createProductRequest struct {
-	Name        string `json:"name" validate:"required"`
-	Description string `json:"description" validate:"required"`
-	CategoryID  int64  `json:"category_id" validate:"required"`
+type createSupplierRequest struct {
+	Name    string `json:"name" validate:"required"`
+	Phone   string `json:"phone" validate:"required"`
+	Address string `json:"address" validate:"required"`
 }
 
-func CreateProductEndpoint(app *web.App, r *http.Request) *web.APIResponse {
-	data := &createProductRequest{}
+func CreateSupplierEndpoint(app *web.App, r *http.Request) *web.APIResponse {
+	data := &createSupplierRequest{}
 	err := app.Validate(data, r, true, false, true, false)
 	if err != nil {
 		return web.NewErrorAPIResponse(fmt.Errorf("invalid payload %w", err), 400)
 	}
 
 	repo := repository.New(app.DB())
-	product, err := repo.CreateProduct(r.Context(), repository.CreateProductParams{
-		Name:        data.Name,
-		Description: data.Description,
-		CategoryID:  data.CategoryID,
+	supplier, err := repo.CreateSupplier(r.Context(), repository.CreateSupplierParams{
+		Name:    data.Name,
+		Phone:   data.Phone,
+		Address: data.Address,
 	})
 
 	if err != nil {
 		return web.NewErrorAPIResponse(err, 500)
 	}
 
-	return web.NewAPIResponse(product, 201)
+	return web.NewAPIResponse(supplier, 201)
 }
 
-func ListProductsEndpoint(app *web.App, r *http.Request) *web.APIResponse {
+func ListSuppliersEndpoint(app *web.App, r *http.Request) *web.APIResponse {
 	repo := repository.New(app.DB())
-	products, err := repo.ListProducts(r.Context())
+	suppliers, err := repo.ListSuppliers(r.Context())
 
 	if err != nil {
 		return web.NewErrorAPIResponse(err, 500)
 	}
 
-	return web.NewAPIResponse(products, 200)
+	return web.NewAPIResponse(suppliers, 200)
 }
 
-type deleteProductRequest struct {
+type deleteSupplierRequest struct {
 	Id int64 `json:"id,string" validate:"required"`
 }
 
-func DeleteProductEndpoint(app *web.App, r *http.Request) *web.APIResponse {
-	data := &deleteProductRequest{}
+func DeleteSupplierEndpoint(app *web.App, r *http.Request) *web.APIResponse {
+	data := &deleteSupplierRequest{}
 	err := app.Validate(data, r, false, false, true, false)
 	if err != nil {
 		return web.NewErrorAPIResponse(fmt.Errorf("invalid payload %w", err), 400)
@@ -89,7 +89,7 @@ func DeleteProductEndpoint(app *web.App, r *http.Request) *web.APIResponse {
 
 	repo := repository.New(app.DB())
 
-	err = repo.DeleteProduct(r.Context(), data.Id)
+	err = repo.DeleteSupplier(r.Context(), data.Id)
 
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
@@ -99,7 +99,7 @@ func DeleteProductEndpoint(app *web.App, r *http.Request) *web.APIResponse {
 	}
 
 	return web.NewAPIResponse(map[string]interface{}{
-		"product_id": data.Id,
+		"supplier_id": data.Id,
 	}, 200)
 
 }

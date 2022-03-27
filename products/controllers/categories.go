@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"database/sql"
 	"errors"
 	"fmt"
 	"github.com/jackc/pgx/v4"
@@ -9,12 +10,12 @@ import (
 	"point-of-sale.go/v1/internal/web"
 )
 
-type getProductRequest struct {
+type getCategoryRequest struct {
 	Id int64 `json:"id,string" validate:"required"`
 }
 
-func GetProductEndpoint(app *web.App, r *http.Request) *web.APIResponse {
-	data := &getProductRequest{}
+func GetCategoryEndpoint(app *web.App, r *http.Request) *web.APIResponse {
+	data := &getCategoryRequest{}
 	err := app.Validate(data, r, false, false, true, false)
 	if err != nil {
 		return web.NewErrorAPIResponse(fmt.Errorf("invalid payload %w", err), 400)
@@ -26,7 +27,7 @@ func GetProductEndpoint(app *web.App, r *http.Request) *web.APIResponse {
 		return web.NewErrorAPIResponse(err, 500)
 	}
 
-	product, err := repo.GetProduct(r.Context(), data.Id)
+	category, err := repo.GetProductCategory(r.Context(), data.Id)
 
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
@@ -35,53 +36,51 @@ func GetProductEndpoint(app *web.App, r *http.Request) *web.APIResponse {
 		return web.NewErrorAPIResponse(err, 500)
 	}
 
-	return web.NewAPIResponse(product, 200)
+	return web.NewAPIResponse(category, 200)
 }
 
-type createProductRequest struct {
-	Name        string `json:"name" validate:"required"`
-	Description string `json:"description" validate:"required"`
-	CategoryID  int64  `json:"category_id" validate:"required"`
+type createCategoryRequest struct {
+	Name     string        `json:"name" validate:"required"`
+	ParentID sql.NullInt64 `json:"parent_id"`
 }
 
-func CreateProductEndpoint(app *web.App, r *http.Request) *web.APIResponse {
-	data := &createProductRequest{}
+func CreateCategoryEndpoint(app *web.App, r *http.Request) *web.APIResponse {
+	data := &createCategoryRequest{}
 	err := app.Validate(data, r, true, false, true, false)
 	if err != nil {
 		return web.NewErrorAPIResponse(fmt.Errorf("invalid payload %w", err), 400)
 	}
 
 	repo := repository.New(app.DB())
-	product, err := repo.CreateProduct(r.Context(), repository.CreateProductParams{
-		Name:        data.Name,
-		Description: data.Description,
-		CategoryID:  data.CategoryID,
+	ProductCategory, err := repo.CreateProductCategory(r.Context(), repository.CreateProductCategoryParams{
+		Name:     data.Name,
+		ParentID: data.ParentID,
 	})
 
 	if err != nil {
 		return web.NewErrorAPIResponse(err, 500)
 	}
 
-	return web.NewAPIResponse(product, 201)
+	return web.NewAPIResponse(ProductCategory, 201)
 }
 
-func ListProductsEndpoint(app *web.App, r *http.Request) *web.APIResponse {
+func ListCategoriesEndpoint(app *web.App, r *http.Request) *web.APIResponse {
 	repo := repository.New(app.DB())
-	products, err := repo.ListProducts(r.Context())
+	categories, err := repo.ListProductCategories(r.Context())
 
 	if err != nil {
 		return web.NewErrorAPIResponse(err, 500)
 	}
 
-	return web.NewAPIResponse(products, 200)
+	return web.NewAPIResponse(categories, 200)
 }
 
-type deleteProductRequest struct {
+type deleteCategoryRequest struct {
 	Id int64 `json:"id,string" validate:"required"`
 }
 
-func DeleteProductEndpoint(app *web.App, r *http.Request) *web.APIResponse {
-	data := &deleteProductRequest{}
+func DeleteCategoryEndpoint(app *web.App, r *http.Request) *web.APIResponse {
+	data := &deleteCategoryRequest{}
 	err := app.Validate(data, r, false, false, true, false)
 	if err != nil {
 		return web.NewErrorAPIResponse(fmt.Errorf("invalid payload %w", err), 400)
@@ -89,7 +88,7 @@ func DeleteProductEndpoint(app *web.App, r *http.Request) *web.APIResponse {
 
 	repo := repository.New(app.DB())
 
-	err = repo.DeleteProduct(r.Context(), data.Id)
+	err = repo.DeleteProductCategory(r.Context(), data.Id)
 
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
@@ -99,7 +98,7 @@ func DeleteProductEndpoint(app *web.App, r *http.Request) *web.APIResponse {
 	}
 
 	return web.NewAPIResponse(map[string]interface{}{
-		"product_id": data.Id,
+		"category_id": data.Id,
 	}, 200)
 
 }
