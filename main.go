@@ -14,6 +14,7 @@ import (
 	"point-of-sale.go/v1/internal/web"
 	"point-of-sale.go/v1/products"
 	"point-of-sale.go/v1/purchases"
+	"point-of-sale.go/v1/sales"
 	"time"
 )
 
@@ -42,6 +43,7 @@ func main() {
 
 	products.InitRoutes(app)
 	purchases.InitRoutes(app)
+	sales.InitRoutes(app)
 
 	s := &http.Server{
 		Addr: "0.0.0.0:8080",

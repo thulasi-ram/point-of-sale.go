@@ -1,4 +1,4 @@
-CREATE TABLE suppliers
+CREATE TABLE customers
 (
     id         BIGSERIAL PRIMARY KEY,
     name       text        NOT NULL,
@@ -10,6 +10,6 @@ CREATE TABLE suppliers
 
 CREATE TRIGGER set_timestamp
     BEFORE UPDATE
-    ON suppliers
+    ON customers
     FOR EACH ROW
 EXECUTE PROCEDURE trigger_set_timestamp();

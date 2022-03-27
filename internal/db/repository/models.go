@@ -7,6 +7,15 @@ import (
 	"time"
 )
 
+type Customer struct {
+	ID        int64
+	Name      string
+	Phone     string
+	Address   string
+	CreatedAt time.Time
+	UpdatedAt time.Time
+}
+
 type Product struct {
 	ID          int64
 	Name        string
