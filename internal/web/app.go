@@ -152,6 +152,8 @@ func (a *App) Close() {
 }
 
 func marshUnmarsh(v interface{}, data map[string]interface{}) error {
+	// for stores other than streams eg: not req.Body
+	// marshall and unmarshall is faster and more efficient
 	dataStr, err := json.Marshal(data)
 	if err != nil {
 		return err
