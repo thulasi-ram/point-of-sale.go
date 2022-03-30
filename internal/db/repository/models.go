@@ -5,6 +5,8 @@ package repository
 import (
 	"database/sql"
 	"time"
+
+	"github.com/jackc/pgtype"
 )
 
 type Customer struct {
@@ -31,6 +33,44 @@ type ProductCategory struct {
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	ParentID  sql.NullInt64
+}
+
+type PurchaseOrder struct {
+	ID                 int64
+	CreatedAt          time.Time
+	UpdatedAt          time.Time
+	SupplierID         int64
+	AdditionalDiscount pgtype.Numeric
+}
+
+type PurchaseOrderItem struct {
+	ID              int64
+	CreatedAt       time.Time
+	UpdatedAt       time.Time
+	PurchaseOrderID int64
+	ProductID       int64
+	Quantity        int32
+	Amount          pgtype.Numeric
+	Discount        pgtype.Numeric
+}
+
+type SaleOrder struct {
+	ID                 int64
+	CreatedAt          time.Time
+	UpdatedAt          time.Time
+	CustomerID         int64
+	AdditionalDiscount pgtype.Numeric
+}
+
+type SaleOrderItem struct {
+	ID          int64
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
+	SaleOrderID int64
+	ProductID   int64
+	Quantity    int32
+	Amount      pgtype.Numeric
+	Discount    pgtype.Numeric
 }
 
 type Supplier struct {

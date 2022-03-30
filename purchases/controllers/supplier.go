@@ -46,7 +46,7 @@ type createSupplierRequest struct {
 
 func CreateSupplierEndpoint(app *web.App, r *http.Request) *web.APIResponse {
 	data := &createSupplierRequest{}
-	err := app.Validate(data, r, true, false, true, false)
+	err := app.Validate(data, r, true, false, false, false)
 	if err != nil {
 		return web.NewErrorAPIResponse(fmt.Errorf("invalid payload %w", err), 400)
 	}

@@ -117,9 +117,9 @@ func (a *App) Bind(v interface{}, r *http.Request, body, query, path, header boo
 	}
 
 	if path {
-		var pathMap map[string]interface{}
+		pathMap := make(map[string]interface{})
 		rc := chi.RouteContext(r.Context()).URLParams
-		for i := 0; i < len(rc.Keys)-1; i++ {
+		for i := 0; i < len(rc.Keys); i++ {
 			pathMap[rc.Keys[i]] = rc.Values[i]
 		}
 		if len(pathMap) > 0 {
@@ -162,6 +162,5 @@ func marshUnmarsh(v interface{}, data map[string]interface{}) error {
 	if err != nil {
 		return err
 	}
-
 	return nil
 }

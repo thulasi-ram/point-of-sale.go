@@ -13,13 +13,12 @@ import (
 	"point-of-sale.go/v1/internal/middleware"
 	"point-of-sale.go/v1/internal/web"
 	"point-of-sale.go/v1/products"
-	"point-of-sale.go/v1/purchases"
+	puchase_controllers "point-of-sale.go/v1/purchases/controllers"
 	"point-of-sale.go/v1/sales"
 	"time"
 )
 
 func main() {
-
 	err := godotenv.Load(".env")
 	if err != nil {
 		fmt.Println("Unable to load .env file")
@@ -42,7 +41,7 @@ func main() {
 	})
 
 	products.InitRoutes(app)
-	purchases.InitRoutes(app)
+	puchase_controllers.InitRoutes(app)
 	sales.InitRoutes(app)
 
 	s := &http.Server{
