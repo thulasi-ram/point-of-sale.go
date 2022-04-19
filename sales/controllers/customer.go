@@ -6,11 +6,12 @@ import (
 	"github.com/jackc/pgx/v4"
 	"net/http"
 	"point-of-sale.go/v1/internal/db/repository"
+	"point-of-sale.go/v1/internal/types"
 	"point-of-sale.go/v1/internal/web"
 )
 
 type getCustomerRequest struct {
-	Id int64 `json:"id,string" validate:"required"`
+	Id types.StringInt `json:"id,string" validate:"required"  msgpack:"id"`
 }
 
 func GetCustomerEndpoint(app *web.App, r *http.Request) *web.APIResponse {
@@ -26,7 +27,7 @@ func GetCustomerEndpoint(app *web.App, r *http.Request) *web.APIResponse {
 		return web.NewErrorAPIResponse(err, 500)
 	}
 
-	customer, err := repo.GetCustomer(r.Context(), data.Id)
+	customer, err := repo.GetCustomer(r.Context(), data.Id.Int64())
 
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
