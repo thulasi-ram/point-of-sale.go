@@ -8,6 +8,7 @@ import (
 	"github.com/go-logr/logr"
 	"github.com/go-playground/validator/v10"
 	"github.com/jackc/pgx/v4/pgxpool"
+	"github.com/vmihailenco/msgpack/v5"
 	"net/http"
 	"os"
 	"point-of-sale.go/v1/internal/config"
@@ -109,7 +110,7 @@ func (a *App) Bind(v interface{}, r *http.Request, body, query, path, header boo
 			queryMap[key] = strings.Join(val, "|")
 		}
 		if len(queryMap) > 0 {
-			err := marshUnmarsh(v, queryMap)
+			err := marshUnmarshMsgpack(v, queryMap)
 			if err != nil {
 				return err
 			}
@@ -123,7 +124,7 @@ func (a *App) Bind(v interface{}, r *http.Request, body, query, path, header boo
 			pathMap[rc.Keys[i]] = rc.Values[i]
 		}
 		if len(pathMap) > 0 {
-			err := marshUnmarsh(v, pathMap)
+			err := marshUnmarshMsgpack(v, pathMap)
 			if err != nil {
 				return err
 			}
@@ -136,7 +137,7 @@ func (a *App) Bind(v interface{}, r *http.Request, body, query, path, header boo
 			headerMap[key] = strings.Join(val, "|")
 		}
 		if len(headerMap) > 0 {
-			err := marshUnmarsh(v, headerMap)
+			err := marshUnmarshMsgpack(v, headerMap)
 			if err != nil {
 				return err
 			}
@@ -159,6 +160,18 @@ func marshUnmarsh(v interface{}, data map[string]interface{}) error {
 		return err
 	}
 	err = json.Unmarshal(dataStr, v)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func marshUnmarshMsgpack(v interface{}, data map[string]interface{}) error {
+	b, err := msgpack.Marshal(data)
+	if err != nil {
+		return err
+	}
+	err = msgpack.Unmarshal(b, v)
 	if err != nil {
 		return err
 	}
