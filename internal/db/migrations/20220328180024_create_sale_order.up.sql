@@ -6,7 +6,7 @@ CREATE TABLE sale_orders
     created_at          TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at          TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     customer_id         BIGINT      NOT NULL REFERENCES customers (id),
-    additional_discount MONEY       not null
+    additional_discount NUMERIC       not null
 );
 
 CREATE TABLE sale_order_items
@@ -17,8 +17,8 @@ CREATE TABLE sale_order_items
     sale_order_id BIGINT      NOT NULL REFERENCES sale_orders (id),
     product_id    BIGINT      NOT NULL REFERENCES products (id),
     quantity      NUMERIC     not null,
-    amount        MONEY       not null,
-    discount      MONEY       not null
+    amount        NUMERIC       not null,
+    discount      NUMERIC       not null
 );
 
 CREATE TRIGGER set_timestamp
