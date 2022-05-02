@@ -15,4 +15,8 @@ func InitRoutes(app *web.App) {
 		r.Get("/{id}", handler(GetSupplierEndpoint))
 		r.Delete("/{id}", handler(DeleteSupplierEndpoint))
 	})
+
+	r.Route("/api/purchase-orders", func(r chi.Router) {
+		r.Post("/", handler(CreatePurchaseOrderEndpoint))
+	})
 }
