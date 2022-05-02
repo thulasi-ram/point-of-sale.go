@@ -11,7 +11,7 @@ import (
 )
 
 type getSupplierRequest struct {
-	Id types.StringInt `json:"id" validate:"required" msgpack:"id"`
+	Id types.ID `json:"id" validate:"required" msgpack:"id"`
 }
 
 func GetSupplierEndpoint(app *web.App, r *http.Request) *web.APIResponse {
