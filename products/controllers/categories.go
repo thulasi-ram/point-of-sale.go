@@ -12,7 +12,7 @@ import (
 )
 
 type getCategoryRequest struct {
-	Id types.StringInt `json:"id" validate:"required" msgpack:"id"`
+	Id types.ID `json:"id" validate:"required" msgpack:"id"`
 }
 
 func GetCategoryEndpoint(app *web.App, r *http.Request) *web.APIResponse {

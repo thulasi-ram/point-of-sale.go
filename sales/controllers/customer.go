@@ -11,7 +11,7 @@ import (
 )
 
 type getCustomerRequest struct {
-	Id types.StringInt `json:"id,string" validate:"required"  msgpack:"id"`
+	Id types.ID `json:"id,string" validate:"required"  msgpack:"id"`
 }
 
 func GetCustomerEndpoint(app *web.App, r *http.Request) *web.APIResponse {
