@@ -16,7 +16,7 @@ CREATE TABLE purchase_order_items
     updated_at        TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     purchase_order_id BIGINT      NOT NULL REFERENCES purchase_orders (id),
     product_id        BIGINT      NOT NULL REFERENCES products (id),
-    quantity          int         not null,
+    quantity          NUMERIC     not null,
     amount            MONEY       not null,
     discount          MONEY       not null
 );
