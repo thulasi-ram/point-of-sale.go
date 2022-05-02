@@ -21,7 +21,15 @@ func (i *ID) DecodeMsgpack(dec *msgpack.Decoder) error {
 	if err != nil {
 		return err
 	}
+
+	// verify if its a proper int
+	ival, err := strconv.Atoi(s)
+	if err != nil {
+		return err
+	}
+
 	i.val = s
+	i.intVal = ival
 	return nil
 }
 
