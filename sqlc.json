@@ -12,11 +12,11 @@
   "overrides": [
     {
       "db_type": "money",
-      "go_type": "github.com/shopspring/decimal"
+      "go_type": "github.com/shopspring/decimal.Decimal"
     },
     {
-      "db_type": "numeric",
-      "go_type": "github.com/shopspring/decimal"
+      "db_type": "pg_catalog.numeric",
+      "go_type": "github.com/shopspring/decimal.Decimal"
     }
   ]
 }
