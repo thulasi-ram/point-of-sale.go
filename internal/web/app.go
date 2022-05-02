@@ -7,6 +7,9 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-logr/logr"
 	"github.com/go-playground/validator/v10"
+	"github.com/jackc/pgtype"
+	shopspring "github.com/jackc/pgtype/ext/shopspring-numeric"
+	"github.com/jackc/pgx/v4"
 	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/vmihailenco/msgpack/v5"
 	"net/http"
@@ -32,7 +35,22 @@ func NewApp() *App {
 	cfg := config.NewConfig(env)
 	vldtr := validator.New()
 
-	db, err := pgxpool.Connect(context.Background(), cfg.DATABASE_URL)
+	pgCfg, err := pgxpool.ParseConfig(cfg.DATABASE_URL)
+	if err != nil {
+		fmt.Println("Unable to parse db url")
+		os.Exit(1)
+	}
+
+	pgCfg.AfterConnect = func(ctx context.Context, conn *pgx.Conn) error {
+		conn.ConnInfo().RegisterDataType(pgtype.DataType{
+			Value: &shopspring.Numeric{},
+			Name:  "numeric",
+			OID:   pgtype.NumericOID,
+		})
+		return nil
+	}
+
+	db, err := pgxpool.ConnectConfig(context.Background(), pgCfg)
 	if err != nil {
 		fmt.Println("Unable to connect to db")
 		os.Exit(1)
