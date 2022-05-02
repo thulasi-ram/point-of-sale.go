@@ -17,7 +17,6 @@ INSERT INTO purchase_orders (supplier_id, additional_discount)
 VALUES ($1, $2)
 RETURNING *;
 
--- name: CreatePurchaseOrderItems :one
+-- name: CreatePurchaseOrderItems :copyfrom
 INSERT INTO purchase_order_items (purchase_order_id, product_id, quantity, amount, discount)
-VALUES ($1, $2, $3, $4, $5)
-RETURNING *;
+VALUES ($1, $2, $3, $4, $5);

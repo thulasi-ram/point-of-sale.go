@@ -9,7 +9,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/jackc/pgtype"
+	"github.com/shopspring/decimal"
 )
 
 const createSaleOrder = `-- name: CreateSaleOrder :one
@@ -20,7 +20,7 @@ RETURNING id, created_at, updated_at, customer_id, additional_discount
 
 type CreateSaleOrderParams struct {
 	CustomerID         int64
-	AdditionalDiscount pgtype.Numeric
+	AdditionalDiscount decimal.Decimal
 }
 
 func (q *Queries) CreateSaleOrder(ctx context.Context, arg CreateSaleOrderParams) (SaleOrder, error) {
@@ -45,9 +45,9 @@ RETURNING id, created_at, updated_at, sale_order_id, product_id, quantity, amoun
 type CreateSaleOrderItemsParams struct {
 	SaleOrderID int64
 	ProductID   int64
-	Quantity    int32
-	Amount      pgtype.Numeric
-	Discount    pgtype.Numeric
+	Quantity    decimal.Decimal
+	Amount      decimal.Decimal
+	Discount    decimal.Decimal
 }
 
 func (q *Queries) CreateSaleOrderItems(ctx context.Context, arg CreateSaleOrderItemsParams) (SaleOrderItem, error) {
@@ -85,15 +85,15 @@ type GetSaleOrderWithItemsRow struct {
 	CreatedAt          time.Time
 	UpdatedAt          time.Time
 	CustomerID         int64
-	AdditionalDiscount pgtype.Numeric
+	AdditionalDiscount decimal.Decimal
 	ID_2               int64
 	CreatedAt_2        time.Time
 	UpdatedAt_2        time.Time
 	SaleOrderID        int64
 	ProductID          int64
-	Quantity           int32
-	Amount             pgtype.Numeric
-	Discount           pgtype.Numeric
+	Quantity           decimal.Decimal
+	Amount             decimal.Decimal
+	Discount           decimal.Decimal
 }
 
 func (q *Queries) GetSaleOrderWithItems(ctx context.Context, id int64) ([]GetSaleOrderWithItemsRow, error) {
@@ -143,15 +143,15 @@ type ListSaleOrdersWithItemsRow struct {
 	CreatedAt          time.Time
 	UpdatedAt          time.Time
 	CustomerID         int64
-	AdditionalDiscount pgtype.Numeric
+	AdditionalDiscount decimal.Decimal
 	ID_2               int64
 	CreatedAt_2        time.Time
 	UpdatedAt_2        time.Time
 	SaleOrderID        int64
 	ProductID          int64
-	Quantity           int32
-	Amount             pgtype.Numeric
-	Discount           pgtype.Numeric
+	Quantity           decimal.Decimal
+	Amount             decimal.Decimal
+	Discount           decimal.Decimal
 }
 
 func (q *Queries) ListSaleOrdersWithItems(ctx context.Context) ([]ListSaleOrdersWithItemsRow, error) {

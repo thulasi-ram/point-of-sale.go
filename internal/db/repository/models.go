@@ -8,7 +8,7 @@ import (
 	"database/sql"
 	"time"
 
-	"github.com/jackc/pgtype"
+	"github.com/shopspring/decimal"
 )
 
 type Customer struct {
@@ -42,7 +42,7 @@ type PurchaseOrder struct {
 	CreatedAt          time.Time
 	UpdatedAt          time.Time
 	SupplierID         int64
-	AdditionalDiscount pgtype.Numeric
+	AdditionalDiscount decimal.Decimal
 }
 
 type PurchaseOrderItem struct {
@@ -51,9 +51,9 @@ type PurchaseOrderItem struct {
 	UpdatedAt       time.Time
 	PurchaseOrderID int64
 	ProductID       int64
-	Quantity        int32
-	Amount          pgtype.Numeric
-	Discount        pgtype.Numeric
+	Quantity        decimal.Decimal
+	Amount          decimal.Decimal
+	Discount        decimal.Decimal
 }
 
 type SaleOrder struct {
@@ -61,7 +61,7 @@ type SaleOrder struct {
 	CreatedAt          time.Time
 	UpdatedAt          time.Time
 	CustomerID         int64
-	AdditionalDiscount pgtype.Numeric
+	AdditionalDiscount decimal.Decimal
 }
 
 type SaleOrderItem struct {
@@ -70,9 +70,9 @@ type SaleOrderItem struct {
 	UpdatedAt   time.Time
 	SaleOrderID int64
 	ProductID   int64
-	Quantity    int32
-	Amount      pgtype.Numeric
-	Discount    pgtype.Numeric
+	Quantity    decimal.Decimal
+	Amount      decimal.Decimal
+	Discount    decimal.Decimal
 }
 
 type Supplier struct {

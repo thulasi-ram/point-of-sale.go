@@ -9,7 +9,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/jackc/pgtype"
+	"github.com/shopspring/decimal"
 )
 
 const createPurchaseOrder = `-- name: CreatePurchaseOrder :one
@@ -20,7 +20,7 @@ RETURNING id, created_at, updated_at, supplier_id, additional_discount
 
 type CreatePurchaseOrderParams struct {
 	SupplierID         int64
-	AdditionalDiscount pgtype.Numeric
+	AdditionalDiscount decimal.Decimal
 }
 
 func (q *Queries) CreatePurchaseOrder(ctx context.Context, arg CreatePurchaseOrderParams) (PurchaseOrder, error) {
@@ -36,40 +36,12 @@ func (q *Queries) CreatePurchaseOrder(ctx context.Context, arg CreatePurchaseOrd
 	return i, err
 }
 
-const createPurchaseOrderItems = `-- name: CreatePurchaseOrderItems :one
-INSERT INTO purchase_order_items (purchase_order_id, product_id, quantity, amount, discount)
-VALUES ($1, $2, $3, $4, $5)
-RETURNING id, created_at, updated_at, purchase_order_id, product_id, quantity, amount, discount
-`
-
 type CreatePurchaseOrderItemsParams struct {
 	PurchaseOrderID int64
 	ProductID       int64
-	Quantity        int32
-	Amount          pgtype.Numeric
-	Discount        pgtype.Numeric
-}
-
-func (q *Queries) CreatePurchaseOrderItems(ctx context.Context, arg CreatePurchaseOrderItemsParams) (PurchaseOrderItem, error) {
-	row := q.db.QueryRow(ctx, createPurchaseOrderItems,
-		arg.PurchaseOrderID,
-		arg.ProductID,
-		arg.Quantity,
-		arg.Amount,
-		arg.Discount,
-	)
-	var i PurchaseOrderItem
-	err := row.Scan(
-		&i.ID,
-		&i.CreatedAt,
-		&i.UpdatedAt,
-		&i.PurchaseOrderID,
-		&i.ProductID,
-		&i.Quantity,
-		&i.Amount,
-		&i.Discount,
-	)
-	return i, err
+	Quantity        decimal.Decimal
+	Amount          decimal.Decimal
+	Discount        decimal.Decimal
 }
 
 const getPurchaseOrderWithItems = `-- name: GetPurchaseOrderWithItems :many
@@ -85,15 +57,15 @@ type GetPurchaseOrderWithItemsRow struct {
 	CreatedAt          time.Time
 	UpdatedAt          time.Time
 	SupplierID         int64
-	AdditionalDiscount pgtype.Numeric
+	AdditionalDiscount decimal.Decimal
 	ID_2               int64
 	CreatedAt_2        time.Time
 	UpdatedAt_2        time.Time
 	PurchaseOrderID    int64
 	ProductID          int64
-	Quantity           int32
-	Amount             pgtype.Numeric
-	Discount           pgtype.Numeric
+	Quantity           decimal.Decimal
+	Amount             decimal.Decimal
+	Discount           decimal.Decimal
 }
 
 func (q *Queries) GetPurchaseOrderWithItems(ctx context.Context, id int64) ([]GetPurchaseOrderWithItemsRow, error) {
@@ -143,15 +115,15 @@ type ListPurchaseOrdersWithItemsRow struct {
 	CreatedAt          time.Time
 	UpdatedAt          time.Time
 	SupplierID         int64
-	AdditionalDiscount pgtype.Numeric
+	AdditionalDiscount decimal.Decimal
 	ID_2               int64
 	CreatedAt_2        time.Time
 	UpdatedAt_2        time.Time
 	PurchaseOrderID    int64
 	ProductID          int64
-	Quantity           int32
-	Amount             pgtype.Numeric
-	Discount           pgtype.Numeric
+	Quantity           decimal.Decimal
+	Amount             decimal.Decimal
+	Discount           decimal.Decimal
 }
 
 func (q *Queries) ListPurchaseOrdersWithItems(ctx context.Context) ([]ListPurchaseOrdersWithItemsRow, error) {
