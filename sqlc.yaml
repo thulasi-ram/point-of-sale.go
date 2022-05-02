@@ -1,7 +1,0 @@
-version: 1
-packages:
-  - path: "internal/db/repository"
-    queries: "./internal/db/repository/queries"
-    engine: "postgresql"
-    schema: "internal/db/migrations"
-    sql_package: "pgx/v4"
